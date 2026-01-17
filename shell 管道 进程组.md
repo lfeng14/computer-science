@@ -60,11 +60,16 @@ echo xxx >  /dev/pts/3
 - read stdin 与 fork，争抢机制标准输入
 - 引入fork后，信号应该发给谁、标准输入应该给谁，这些都是可以考虑的
 - 打开终端，产生session，产生进程组，执行的命令比如ls cat 之类的都是这个进程组的子进程运行；
-  <img width="1244" height="774" alt="image" src="https://github.com/user-attachments/assets/50d663c9-6377-4549-a84f-2fb6777220ef" />
-
+  <img width="2062" height="1078" alt="image" src="https://github.com/user-attachments/assets/b655eacb-cd35-4e17-80a5-3cbe7bcb4d62" />
+  
 - <img width="2070" height="1082" alt="image" src="https://github.com/user-attachments/assets/64874e25-0759-476a-9887-20f325cd458e" />
 - tmux使用
   ```
   tmux
   [exited]
   ```
+- 希望你通过man查看更复杂的手册
+  <img width="2060" height="960" alt="image" src="https://github.com/user-attachments/assets/fa39a3bd-3beb-4765-8855-00fb39ac8263" />
+- shell 是用户和系统交互的接口，它可以启动前台进程组和后台进程组。当一个前台进程组在运行的时候，它会占用标准输入，这时候 shell 和其他后台进程组就无法直接获得标准输入。因为标准输入在某一时刻只能被一个进程组使用。不过，shell 本身也可以执行一些命令，而且它可以通过特殊的方式将标准输入重定向到其他地方，包括后台进程组，但这就需要一些额外的命令和配置了。
+  <img width="1092" height="788" alt="image" src="https://github.com/user-attachments/assets/e26ac44e-a6a6-4279-ba8e-3790ee452f69" />
+  <img width="1664" height="1016" alt="image" src="https://github.com/user-attachments/assets/3c4790a5-29d2-4451-8254-bb786b2b75f5" />
