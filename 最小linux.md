@@ -52,6 +52,8 @@
           0xfffffffdf000    0x1000000000000    0x21000        0x0  rw-p   [stack]
   ```
 - 进程通过mmap加载glibc，也可以通过mmap开辟一段大的地址空间
+  <img width="2070" height="1148" alt="image" src="https://github.com/user-attachments/assets/8af6ffac-182a-437d-9482-dc6231035aa7" />
+
   <img width="2052" height="970" alt="image" src="https://github.com/user-attachments/assets/93e51d9c-52df-4143-b28b-e6e69eeacddd" />
 
 - 通过挂载宿主机程序到虚拟机，就可以使用多样工具
@@ -59,4 +61,6 @@
 <img width="1110" height="746" alt="image" src="https://github.com/user-attachments/assets/76d0a0b7-40bd-40e8-92f3-ba508970e036" />
 - 打印main函数第一条指令
 <img width="2060" height="1130" alt="image" src="https://github.com/user-attachments/assets/977f735a-cde5-459a-bf83-a8d992637359" />
+- 修改进程空间指令，实现替换函数
+  <img width="2096" height="1132" alt="image" src="https://github.com/user-attachments/assets/6a75c025-fc1c-4e7c-a0b7-48487b42849e" />
 
