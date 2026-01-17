@@ -1,4 +1,4 @@
-- 示例
+### 示例
 ```
 franz@ubuntu:~/src$ cat demo.c 
 #include <unistd.h>
@@ -15,11 +15,11 @@ int main() {
  print("Hello, World!\n");
 }
 ```
-- 构建
+### 构建
   ```
   gcc demo.c -o demo
   ```
-- 用strace分析执行哪些系统调用
+### 用strace分析执行哪些系统调用
   ```
   strace ./demo
   execve("./demo", ["./demo"], 0xffffd7f1fcf0 /* 23 vars */) = 0
@@ -210,5 +210,234 @@ int main() {
   exit_group(0)                           = ?
   +++ exited with 0 +++
   ```
-  - 说明linux系统内可以通过fork拷贝状态机也可以通过execve命令reset重置状态机
-  
+### 说明linux系统内可以通过fork拷贝状态机也可以通过execve命令reset重置状态机
+### 同样也可以通过strace命令来分析gcc构建时调用了哪些
+  ```
+  strace gcc demo.c -o demo
+  execve("/usr/bin/gcc", ["gcc", "demo.c", "-o", "demo"], 0xffffda670c58 /* 23 vars */) = 0
+  brk(NULL)                               = 0xd74c000
+  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xebb2e4160000
+  faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+  openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=34027, ...}) = 0
+  mmap(NULL, 34027, PROT_READ, MAP_PRIVATE, 3, 0) = 0xebb2e4157000
+  close(3)                                = 0
+  openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+  read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\360\206\2\0\0\0\0\0"..., 832) = 832
+  fstat(3, {st_mode=S_IFREG|0755, st_size=1722920, ...}) = 0
+  mmap(NULL, 1892240, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_DENYWRITE, -1, 0) = 0xebb2e3f59000
+  mmap(0xebb2e3f60000, 1826704, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xebb2e3f60000
+  munmap(0xebb2e3f59000, 28672)           = 0
+  munmap(0xebb2e411e000, 36752)           = 0
+  mprotect(0xebb2e40f9000, 81920, PROT_NONE) = 0
+  mmap(0xebb2e410d000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x19d000) = 0xebb2e410d000
+  mmap(0xebb2e4112000, 49040, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xebb2e4112000
+  close(3)                                = 0
+  set_tid_address(0xebb2e4161050)         = 405962
+  set_robust_list(0xebb2e4161060, 24)     = 0
+  rseq(0xebb2e41616a0, 0x20, 0, 0xd428bc00) = 0
+  mprotect(0xebb2e410d000, 12288, PROT_READ) = 0
+  mprotect(0x4fe000, 8192, PROT_READ)     = 0
+  mprotect(0xebb2e4165000, 8192, PROT_READ) = 0
+  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+  munmap(0xebb2e4157000, 34027)           = 0
+  getrandom("\xd7\x21\x0b\x71\x6e\x4a\x65\x68", 8, GRND_NONBLOCK) = 8
+  brk(NULL)                               = 0xd74c000
+  brk(0xd76d000)                          = 0xd76d000
+  brk(0xd78f000)                          = 0xd78f000
+  openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=3055776, ...}) = 0
+  mmap(NULL, 3055776, PROT_READ, MAP_PRIVATE, 3, 0) = 0xebb2e3c00000
+  close(3)                                = 0
+  openat(AT_FDCWD, "/usr/share/locale/locale.alias", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=2996, ...}) = 0
+  read(3, "# Locale name alias data base.\n#"..., 4096) = 2996
+  read(3, "", 4096)                       = 0
+  close(3)                                = 0
+  openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+  openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=360460, ...}) = 0
+  mmap(NULL, 360460, PROT_READ, MAP_PRIVATE, 3, 0) = 0xebb2e3f07000
+  close(3)                                = 0
+  openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=27028, ...}) = 0
+  mmap(NULL, 27028, PROT_READ, MAP_SHARED, 3, 0) = 0xebb2e4159000
+  close(3)                                = 0
+  futex(0xebb2e411166c, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+  openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_MESSAGES", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+  openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MESSAGES", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+  close(3)                                = 0
+  openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES", O_RDONLY|O_CLOEXEC) = 3
+  fstat(3, {st_mode=S_IFREG|0644, st_size=48, ...}) = 0
+  mmap(NULL, 48, PROT_READ, MAP_PRIVATE, 3, 0) = 0xebb2e4158000
+  close(3)                                = 0
+  ioctl(2, TCGETS, {c_iflag=ICRNL|IXON|IXANY|IMAXBEL|IUTF8, c_oflag=NL0|CR0|TAB0|BS0|VT0|FF0|OPOST|ONLCR, c_cflag=B9600|CS8|CREAD, c_lflag=ISIG|ICANON|ECHO|ECHOE|IEXTEN|ECHOCTL|ECHOKE|PENDIN, ...}) = 0
+  ioctl(0, TIOCGWINSZ, {ws_row=62, ws_col=244, ws_xpixel=1708, ws_ypixel=877}) = 0
+  ioctl(2, TCGETS, {c_iflag=ICRNL|IXON|IXANY|IMAXBEL|IUTF8, c_oflag=NL0|CR0|TAB0|BS0|VT0|FF0|OPOST|ONLCR, c_cflag=B9600|CS8|CREAD, c_lflag=ISIG|ICANON|ECHO|ECHOE|IEXTEN|ECHOCTL|ECHOKE|PENDIN, ...}) = 0
+  ioctl(2, TCGETS, {c_iflag=ICRNL|IXON|IXANY|IMAXBEL|IUTF8, c_oflag=NL0|CR0|TAB0|BS0|VT0|FF0|OPOST|ONLCR, c_cflag=B9600|CS8|CREAD, c_lflag=ISIG|ICANON|ECHO|ECHOE|IEXTEN|ECHOCTL|ECHOKE|PENDIN, ...}) = 0
+  rt_sigaction(SIGINT, {sa_handler=SIG_IGN, sa_mask=[INT], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+  rt_sigaction(SIGINT, {sa_handler=0x408e68, sa_mask=[INT], sa_flags=SA_RESTART}, {sa_handler=SIG_IGN, sa_mask=[INT], sa_flags=SA_RESTART}, 8) = 0
+  rt_sigaction(SIGHUP, {sa_handler=SIG_IGN, sa_mask=[HUP], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+  rt_sigaction(SIGHUP, {sa_handler=0x408e68, sa_mask=[HUP], sa_flags=SA_RESTART}, {sa_handler=SIG_IGN, sa_mask=[HUP], sa_flags=SA_RESTART}, 8) = 0
+  rt_sigaction(SIGTERM, {sa_handler=SIG_IGN, sa_mask=[TERM], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+  rt_sigaction(SIGTERM, {sa_handler=0x408e68, sa_mask=[TERM], sa_flags=SA_RESTART}, {sa_handler=SIG_IGN, sa_mask=[TERM], sa_flags=SA_RESTART}, 8) = 0
+  rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+  rt_sigaction(SIGPIPE, {sa_handler=0x408e68, sa_mask=[PIPE], sa_flags=SA_RESTART}, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTART}, 8) = 0
+  rt_sigaction(SIGCHLD, {sa_handler=SIG_DFL, sa_mask=[CHLD], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+  prlimit64(0, RLIMIT_STACK, {rlim_cur=65536*1024, rlim_max=RLIM64_INFINITY}, NULL) = 0
+  faccessat(AT_FDCWD, "/usr/local/sbin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/local/bin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/sbin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/bin/gcc", X_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/bin/gcc", {st_mode=S_IFREG|0755, st_size=990040, ...}, 0) = 0
+  readlinkat(AT_FDCWD, "/usr", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  readlinkat(AT_FDCWD, "/usr/bin", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  readlinkat(AT_FDCWD, "/usr/bin/gcc", "gcc-13", 1023) = 6
+  readlinkat(AT_FDCWD, "/usr/bin/gcc-13", "aarch64-linux-gnu-gcc-13", 1023) = 24
+  readlinkat(AT_FDCWD, "/usr/bin/aarch64-linux-gnu-gcc-13", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  faccessat(AT_FDCWD, "/usr/local/sbin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/local/bin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/sbin/gcc", X_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/bin/gcc", X_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/bin/gcc", {st_mode=S_IFREG|0755, st_size=990040, ...}, 0) = 0
+  readlinkat(AT_FDCWD, "/usr", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  readlinkat(AT_FDCWD, "/usr/bin", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  readlinkat(AT_FDCWD, "/usr/bin/gcc", "gcc-13", 1023) = 6
+  readlinkat(AT_FDCWD, "/usr/bin/gcc-13", "aarch64-linux-gnu-gcc-13", 1023) = 24
+  readlinkat(AT_FDCWD, "/usr/bin/aarch64-linux-gnu-gcc-13", 0xffffdc007c80, 1023) = -1 EINVAL (Invalid argument)
+  getcwd("/home/franz/src", 1024)         = 16
+  readlinkat(AT_FDCWD, "/home/franz/src/demo.c", 0xffffdc007e20, 1023) = -1 EINVAL (Invalid argument)
+  getcwd("/home/franz/src", 1024)         = 16
+  readlinkat(AT_FDCWD, "/home/franz/src/demo", 0xffffdc007e20, 1023) = -1 EINVAL (Invalid argument)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/", X_OK) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/", X_OK) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/specs", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/specs", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/specs", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/specs", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/", X_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/lto-wrapper", {st_mode=S_IFREG|0755, st_size=856192, ...}, 0) = 0
+  faccessat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/lto-wrapper", X_OK) = 0
+  faccessat(AT_FDCWD, "/tmp", R_OK|W_OK|X_OK) = 0
+  newfstatat(AT_FDCWD, "/tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=20480, ...}, 0) = 0
+  openat(AT_FDCWD, "/tmp/cchosBzC.s", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+  close(3)                                = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/cc1", {st_mode=S_IFREG|0755, st_size=26761448, ...}, 0) = 0
+  faccessat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/cc1", X_OK) = 0
+  pipe2([3, 4], O_CLOEXEC)                = 0
+  clone(child_stack=0xffffdc0083d0, flags=CLONE_VM|CLONE_VFORK|SIGCHLD) = 405963
+  close(4)                                = 0
+  read(3, "", 16)                         = 0
+  close(3)                                = 0
+  wait4(405963, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 405963
+  --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=405963, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+  openat(AT_FDCWD, "/tmp/ccPcgQpG.o", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+  close(3)                                = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/13/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/13/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu-as", 0xffffdc009100, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/as", 0xffffdc009160, 0) = -1 ENOENT (No such file or directory)
+  pipe2([3, 4], O_CLOEXEC)                = 0
+  clone(child_stack=0xffffdc009200, flags=CLONE_VM|CLONE_VFORK|SIGCHLD) = 405964
+  close(4)                                = 0
+  read(3, "", 16)                         = 0
+  close(3)                                = 0
+  wait4(405964, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 405964
+  --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=405964, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/collect2", {st_mode=S_IFREG|0755, st_size=331800, ...}, 0) = 0
+  faccessat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/collect2", X_OK) = 0
+  faccessat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/liblto_plugin.so", R_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/13/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/aarch64-linux-gnu/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/../lib/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/13/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/lib/aarch64-linux-gnu/13/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/lib/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/lib/../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/13/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/.", 0xffffdc0090a0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  openat(AT_FDCWD, "/tmp/ccjk9Pnk.res", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+  close(3)                                = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/Scrt1.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/Scrt1.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/Scrt1.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/../lib/Scrt1.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/13/Scrt1.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/Scrt1.o", R_OK) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/crti.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/crti.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/crti.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/../lib/crti.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/13/crti.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crti.o", R_OK) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o", R_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/../lib/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/13/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/lib/aarch64-linux-gnu/13/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/lib/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/lib/../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/13/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/.", {st_mode=S_IFDIR|0755, st_size=36864, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/../lib/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/.", 0xffffdc0082b0, 0) = -1 ENOENT (No such file or directory)
+  newfstatat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../.", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o", R_OK) = 0
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/crtn.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/13/crtn.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/aarch64-linux-gnu/crtn.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/lib/../lib/crtn.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/13/crtn.o", R_OK) = -1 ENOENT (No such file or directory)
+  faccessat(AT_FDCWD, "/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crtn.o", R_OK) = 0
+  newfstatat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/collect2", {st_mode=S_IFREG|0755, st_size=331800, ...}, 0) = 0
+  faccessat(AT_FDCWD, "/usr/libexec/gcc/aarch64-linux-gnu/13/collect2", X_OK) = 0
+  pipe2([3, 4], O_CLOEXEC)                = 0
+  clone(child_stack=0xffffdc008340, flags=CLONE_VM|CLONE_VFORK|SIGCHLD) = 405965
+  close(4)                                = 0
+  read(3, "", 16)                         = 0
+  close(3)                                = 0
+  wait4(405965, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 405965
+  --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=405965, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+  newfstatat(AT_FDCWD, "/tmp/ccjk9Pnk.res", {st_mode=S_IFREG|0600, st_size=0, ...}, 0) = 0
+  unlinkat(AT_FDCWD, "/tmp/ccjk9Pnk.res", 0) = 0
+  newfstatat(AT_FDCWD, "/tmp/ccPcgQpG.o", {st_mode=S_IFREG|0600, st_size=2384, ...}, 0) = 0
+  unlinkat(AT_FDCWD, "/tmp/ccPcgQpG.o", 0) = 0
+  newfstatat(AT_FDCWD, "/tmp/cchosBzC.s", {st_mode=S_IFREG|0600, st_size=1455, ...}, 0) = 0
+  unlinkat(AT_FDCWD, "/tmp/cchosBzC.s", 0) = 0
+  exit_group(0)                           = ?
+  +++ exited with 0 +++
+  ```
