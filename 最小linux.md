@@ -1,5 +1,5 @@
 - 程序都是init程序的子孙后代
-- readelf -l 与 pmap 【pid】、gdb查看地址空间查看进程内存分布；哪些段只读、读写、可执行；地址空间布局随机化
+- readelf -l 与 pmap 【pid】、gdb查看地址空间查看进程地址空间；哪些段只读、读写、可执行；地址空间布局随机化、地址空间隔离
   ```
   readelf -l ./demo
   
@@ -51,6 +51,8 @@
           0xfffff7ffe000     0xfffff8000000     0x2000    0x30000  rw-p   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
           0xfffffffdf000    0x1000000000000    0x21000        0x0  rw-p   [stack]
   ```
+  <img width="1056" height="776" alt="image" src="https://github.com/user-attachments/assets/39c0a967-9670-45d2-b95d-769b11b4b245" />
+
 - 进程通过mmap加载glibc，也可以通过mmap开辟一段大的地址空间
   <img width="2070" height="1148" alt="image" src="https://github.com/user-attachments/assets/8af6ffac-182a-437d-9482-dc6231035aa7" />
 
@@ -63,4 +65,4 @@
 <img width="2060" height="1130" alt="image" src="https://github.com/user-attachments/assets/977f735a-cde5-459a-bf83-a8d992637359" />
 - 修改进程空间指令，实现替换函数
   <img width="2096" height="1132" alt="image" src="https://github.com/user-attachments/assets/6a75c025-fc1c-4e7c-a0b7-48487b42849e" />
-
+- vdso是内核和用户态的快捷通道，比如gettime、getcpu这种函数直接通过vdso获取省去了从内核获取
