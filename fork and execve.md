@@ -210,7 +210,7 @@ int main() {
   exit_group(0)                           = ?
   +++ exited with 0 +++
   ```
-### 说明linux系统内可以通过fork拷贝状态机也可以通过execve命令reset重置状态机
+### 说明linux系统内可以通过fork拷贝状态机也可以通过execve命令reset重置状态机，通过exit、_exit、__exit来销毁线程、进程等
 ### 同样也可以通过strace命令来分析gcc构建时调用了哪些
   ```
   strace gcc demo.c -o demo
