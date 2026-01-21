@@ -30,7 +30,7 @@
   ```
 <img width="1044" height="688" alt="image" src="https://github.com/user-attachments/assets/33956e86-2baf-421b-b296-b627e85fd9b4" />
 - x/10i 0  显示10条0地址的指令
-- <img width="828" height="1062" alt="image" src="https://github.com/user-attachments/assets/708d46dc-e6d6-45fa-85c3-3e228fe202f4" />
+  <img width="828" height="1062" alt="image" src="https://github.com/user-attachments/assets/708d46dc-e6d6-45fa-85c3-3e228fe202f4" />
 - 打印寄存器内容，需要加美元符号，p/x $sscratch; p/x $a0; p/x *(trapframe*)$a0;
-- <img width="930" height="326" alt="image" src="https://github.com/user-attachments/assets/bc2aa9b7-c42a-46b2-b206-dd17d48e99c4" />
+  <img width="930" height="326" alt="image" src="https://github.com/user-attachments/assets/bc2aa9b7-c42a-46b2-b206-dd17d48e99c4" />
 - 舒服是很重要的
